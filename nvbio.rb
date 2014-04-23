@@ -2,8 +2,7 @@ require "formula"
 
 class Nvbio < Formula
   homepage "https://developer.nvidia.com/nvbio"
-  url "https://github.com/NVlabs/nvbio/archive/3e6efbdf5f8e6ac69beaed2f78bb64ac5aab3e09.tar.gz"
-  version "0.9.5"
+  url "https://github.com/NVlabs/nvbio/archive/v0.9.5.tar.gz"
   sha1 "c55f2e804d6a87ce34671f9fe355376350741096"
   head "https://github.com/NVlabs/nvbio.git"
 
