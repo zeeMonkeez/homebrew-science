@@ -1,13 +1,13 @@
 class Asl < Formula
   desc "The AMPL modeling language solver library"
   homepage "http://www.ampl.com"
-  url "https://github.com/ampl/mp/archive/2.0.2.tar.gz"
-  sha256 "34d0ffef4af6f34ac5e50cfdb6819af823c2f6fb1db763b82de98b08d9069f63"
+  url "https://github.com/ampl/mp/archive/2.0.3.tar.gz"
+  sha256 "4ae38da883cfdf077d57c488b03756d9068b1d5b8552db983f6690246edc71a8"
 
   bottle do
-    sha256 "73a5a3c57d8f8dad40868703443f4ba56b3509d98afd35783d5f34dafd7095d6" => :yosemite
-    sha256 "8f81c5d487f55cd031515d6d239fc781a2a50bc22a8f1a6e4b9dce07370803d6" => :mavericks
-    sha256 "1362349ddc7bf0ce8087979821b148811a1f351ef32bc80d54249d2c97df9c51" => :mountain_lion
+    sha256 "a62f6f85ed76a2150d887b99c4090b748919becfa4f8a1fbf5f74a20baaba6ae" => :yosemite
+    sha256 "7d54631c85cb0b5e649b7eb49b8f93042e53eb9aad252e0e3a5cda3de7a7a1ed" => :mavericks
+    sha256 "63fc816165d937850a57ffcb0ec75638bdba78350819426842f317c399389348" => :mountain_lion
   end
 
   option "with-matlab", "Build MEX files for use with Matlab"
@@ -15,12 +15,6 @@ class Asl < Formula
 
   depends_on "cmake" => :build
   depends_on "doxygen" => :optional
-
-  # https://github.com/ampl/mp/issues/55
-  patch :p1 do
-    url "https://github.com/ampl/mp/commit/8a777497b9ccac035a5d59cb12e3d9a3ba815256.diff"
-    sha256 "5da9fa46e1509bce744933166891da12c895b8ffd2e6705008377bdb81259b22"
-  end
 
   # https://github.com/ampl/mp/pull/60
   patch :p1 do
@@ -52,14 +46,14 @@ class Asl < Formula
     ln_sf Dir["#{libexec}/include/*"], include
 
     if build.with? "matlab"
-      mkdir_p (share / "asl/matlab")
-      ln_sf Dir["#{libexec}/bin/*.mexmaci64"], (share / "asl/matlab")
+      mkdir_p (pkgshare/"matlab")
+      ln_sf Dir["#{libexec}/bin/*.mexmaci64"], (pkgshare/"matlab")
     end
 
     resource("miniampl").stage do
       system "make", "SHELL=/bin/bash", "CXX=#{ENV["CC"]} -std=c99", "LIBAMPL_DIR=#{prefix}", "LIBS=-L$(LIBAMPL_DIR)/lib -lasl -lm -ldl"
       bin.install "bin/miniampl"
-      (share / "asl/example").install "Makefile", "README.rst", "src", "examples"
+      (pkgshare/"example").install "Makefile", "README.rst", "src", "examples"
     end
   end
 
@@ -69,13 +63,16 @@ class Asl < Formula
       s += <<-EOS.undent
         Matlab interfaces have been installed to
 
-          #{opt_share}/asl/matlab
+          #{opt_pkgshare}/matlab
       EOS
     end
     s
   end
 
   test do
-    system "#{bin}/miniampl", "#{share}/asl/example/examples/wb", "showname=1", "showgrad=1"
+    cp Dir["#{opt_pkgshare}/example/examples/*"], testpath
+    cd testpath do
+      system "#{opt_bin}/miniampl", "wb", "showname=1", "showgrad=1"
+    end
   end
 end
