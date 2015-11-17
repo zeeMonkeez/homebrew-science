@@ -15,7 +15,7 @@ class Armadillo < Formula
 
   depends_on "cmake" => :build
   depends_on "arpack"
-  depends_on "superlu"
+  depends_on "superlu43"
   depends_on "hdf5" => :optional
   depends_on "openblas" if OS.linux?
 
